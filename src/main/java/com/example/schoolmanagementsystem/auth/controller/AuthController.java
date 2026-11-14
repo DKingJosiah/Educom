@@ -6,7 +6,6 @@ import com.example.schoolmanagementsystem.user.dto.LoginRequest;
 import com.example.schoolmanagementsystem.user.dto.RegisterRequest;
 import com.example.schoolmanagementsystem.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,17 +76,17 @@ public class AuthController {
     }
 
 
-    @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        SecurityContextHolder.clearContext();
-
-        return ResponseEntity.ok(ApiResponse.success("Logout successful"));
-    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+//        HttpSession session = request.getSession(false);
+//        if (session != null) {
+//            session.invalidate();
+//        }
+//
+//        SecurityContextHolder.clearContext();
+//
+//        return ResponseEntity.ok(ApiResponse.success("Logout successful"));
+//    }
 
 
 }
