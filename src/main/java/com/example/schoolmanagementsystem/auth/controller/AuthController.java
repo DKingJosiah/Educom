@@ -15,12 +15,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -65,16 +64,35 @@ public class AuthController {
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        httpRequest.getSession(true);
+        var session = httpRequest.getSession(true);
+
         httpRequest.changeSessionId();
-        httpRequest.getSession().setAttribute(
+
+        session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 securityContext
         );
-
         return ResponseEntity.ok(ApiResponse.success("Login successful"));
     }
 
+    @GetMapping("/csrf")
+    public CsrfToken csrf(CsrfToken csrfToken) {
+        return csrfToken;
+    }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getCurrentUser(
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                Map.of(
+                        "authenticated", authentication.isAuthenticated(),
+                        "email", authentication.getName(),
+                        "authorities", authentication.getAuthorities()
+                )
+        );
+    }
 
 //    @PostMapping("/logout")
 //    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
